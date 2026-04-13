@@ -59,7 +59,8 @@
     --selected-glow: rgba(56,189,248,0.1);
     --error-bg: rgba(239,68,68,0.15);
     --error: #f87171;
-    --same-bg: rgba(129,140,248,0.08);
+    --same-bg: rgba(129,140,248,0.18);
+    --same-color: #a5b4fc;
     --num-color: rgba(203,213,225,0.9);
     --action-color: #64748b;
     --action-bg: rgba(15,23,42,0.5);
@@ -102,7 +103,8 @@
     --selected-glow: rgba(2,132,199,0.08);
     --error-bg: rgba(239,68,68,0.08);
     --error: #dc2626;
-    --same-bg: rgba(99,102,241,0.07);
+    --same-bg: rgba(99,102,241,0.14);
+    --same-color: #4f46e5;
     --num-color: #334155;
     --action-color: #94a3b8;
     --action-bg: rgba(241,245,249,0.8);
@@ -164,18 +166,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--accent-bg);
+    border: 1px solid var(--accent-border);
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     transition: all 0.2s;
     padding: 0;
     line-height: 1;
     flex-shrink: 0;
     -webkit-text-fill-color: initial;
+    color: var(--accent);
   }
 
-  .theme-toggle:hover { border-color: var(--accent-border); }
+  .theme-toggle:hover { background: var(--selected-bg); }
 
   /* --- Difficulty --- */
   .controls {
@@ -324,7 +327,11 @@
     color: var(--error);
     animation: popIn 0.2s ease-out;
   }
-  .cell.same-value { background: var(--same-bg); }
+  .cell.same-value {
+    background: var(--same-bg);
+    color: var(--same-color);
+    font-weight: 800;
+  }
   .cell.complete-flash { animation: completePulse 0.7s ease-out; }
   .cell.complete-number { animation: completeNumber 0.45s ease-out; }
 
