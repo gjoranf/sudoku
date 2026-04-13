@@ -78,44 +78,79 @@
 
   .info-bar {
     display: flex;
-    gap: 6px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
+    margin-bottom: 12px;
+    gap: 8px;
+    width: min(88vw, 430px);
   }
 
   .info-bar .stat {
     display: flex;
-    align-items: center;
-    gap: 6px;
-    background: rgba(30,41,59,0.7);
-    border: 1px solid rgba(148,163,184,0.1);
-    border-radius: 10px;
-    padding: 6px 14px;
-    backdrop-filter: blur(8px);
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px;
+    flex: 1;
+    background: rgba(30,41,59,0.5);
+    border: 1px solid rgba(148,163,184,0.08);
+    border-radius: 8px;
+    padding: 4px 4px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .info-bar .stat::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 1.5px;
+    border-radius: 0 0 4px 4px;
   }
 
   .info-bar .stat-label {
-    font-size: 0.72rem;
-    font-weight: 600;
+    font-size: 0.5rem;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #64748b;
   }
 
-  .info-bar .value {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #38bdf8;
+  .info-bar .stat .value {
+    font-size: 0.85rem;
+    font-weight: 800;
     font-variant-numeric: tabular-nums;
+    line-height: 1;
   }
+
+  /* Feil — red accent */
+  .info-bar .stat.stat-errors::before { background: #f87171; }
+  .info-bar .stat.stat-errors .value { color: #f87171; }
+  .info-bar .stat.stat-errors .stat-label { color: #f8717180; }
+  .info-bar .stat.stat-errors { border-color: rgba(248,113,113,0.1); }
+
+  /* Tid — amber accent */
+  .info-bar .stat.stat-time::before { background: #fbbf24; }
+  .info-bar .stat.stat-time .value { color: #fbbf24; }
+  .info-bar .stat.stat-time .stat-label { color: #fbbf2480; }
+  .info-bar .stat.stat-time { border-color: rgba(251,191,36,0.1); }
+
+  /* Poeng — cyan accent */
+  .info-bar .stat.stat-score::before { background: #38bdf8; }
+  .info-bar .stat.stat-score .value { color: #38bdf8; }
+  .info-bar .stat.stat-score .stat-label { color: #38bdf880; }
+  .info-bar .stat.stat-score { border-color: rgba(56,189,248,0.1); }
+
+  /* Rekord — purple/gold accent */
+  .info-bar .stat.stat-best::before { background: linear-gradient(90deg, #a78bfa, #fbbf24); }
+  .info-bar .stat.stat-best .value { color: #a78bfa; }
+  .info-bar .stat.stat-best .stat-label { color: #a78bfa80; }
+  .info-bar .stat.stat-best { border-color: rgba(167,139,250,0.1); }
 
   .board {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     gap: 0;
     border: 2px solid rgba(56,189,248,0.3);
-    border-radius: 12px 12px 0 0;
+    border-radius: 12px;
     overflow: hidden;
     width: min(88vw, 430px);
     background: rgba(15,23,42,0.9);
@@ -161,44 +196,17 @@
   .cell.same-value { background: rgba(129,140,248,0.12); }
 
 
-  .actions {
-    display: flex;
-    width: min(88vw, 430px);
-    gap: 0;
-    margin-top: -1px;
-  }
-
-  .actions button {
-    flex: 1;
-    padding: 8px 0;
-    border-radius: 0;
-    background: rgba(20,30,48,0.8);
-    border: 1px solid rgba(56,189,248,0.12);
-    border-top-color: rgba(56,189,248,0.3);
-    font-size: 0.7rem;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-
-  .actions button:first-child { border-radius: 0 0 0 10px; }
-  .actions button:last-child { border-radius: 0 0 10px 0; }
-
-  .actions button:hover {
-    background: rgba(56,189,248,0.1);
-    color: #38bdf8;
-  }
-
   .numpad {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-    margin-top: 14px;
+    grid-template-columns: repeat(9, 1fr);
+    gap: 4px;
+    margin-top: 18px;
     width: min(88vw, 430px);
     animation: fadeIn 0.4s ease-out 0.1s both;
   }
 
   .numpad button {
-    padding: 14px 4px;
+    padding: 16px 4px;
     font-size: 1.5rem;
     font-weight: 700;
     border-radius: 12px;
@@ -214,7 +222,22 @@
     border-color: rgba(56,189,248,0.3);
     box-shadow: 0 0 16px rgba(56,189,248,0.1);
   }
-  .numpad button.erase-btn { font-size: 0.8rem; font-weight: 600; }
+
+  .numpad .bottom-row {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-top: 8px;
+  }
+
+  .numpad .bottom-row button {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 10px 4px;
+  }
 
   .message {
     margin-top: 18px;
@@ -235,117 +258,6 @@
     border: 1px solid rgba(52,211,153,0.3);
   }
 
-  /* Overlay & panels */
-  .overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
-    z-index: 100;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
-  .overlay.visible { display: flex; }
-
-  .saves-panel {
-    background: #1e293b;
-    border: 1px solid rgba(148,163,184,0.1);
-    border-radius: 16px;
-    width: min(95vw, 480px);
-    max-height: 80vh;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 25px 80px rgba(0,0,0,0.5);
-    animation: popIn 0.25s ease-out;
-  }
-
-  .saves-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 22px;
-    border-bottom: 1px solid rgba(148,163,184,0.1);
-  }
-
-  .saves-header h2 {
-    font-size: 1.1rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #e2e8f0;
-  }
-
-  .saves-header button {
-    padding: 6px 14px;
-    font-size: 0.8rem;
-    background: rgba(51,65,85,0.5);
-    color: #94a3b8;
-  }
-
-  .saves-body {
-    overflow-y: auto;
-    padding: 14px;
-    flex: 1;
-  }
-
-  .saves-empty {
-    text-align: center;
-    color: #475569;
-    padding: 40px 20px;
-    font-size: 0.9rem;
-  }
-
-  /* High-score panel */
-  .hs-diff-title {
-    font-size: 0.8rem;
-    font-weight: 700;
-    padding: 12px 8px 6px;
-    color: #94a3b8;
-    border-bottom: 1px solid rgba(148,163,184,0.08);
-    margin-top: 4px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-
-  .hs-list {
-    list-style: none;
-    padding: 0 8px;
-    margin: 0;
-    counter-reset: hs;
-  }
-
-  .hs-entry {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 4px;
-    border-bottom: 1px solid rgba(51,65,85,0.3);
-    font-size: 0.88rem;
-    counter-increment: hs;
-  }
-
-  .hs-entry::before {
-    content: counter(hs) ".";
-    font-weight: 800;
-    color: #64748b;
-    min-width: 24px;
-  }
-
-  .hs-entry:first-child::before { color: #fbbf24; }
-
-  .hs-score {
-    font-weight: 800;
-    color: #38bdf8;
-    min-width: 50px;
-  }
-
-  .hs-meta {
-    color: #475569;
-    font-size: 0.78rem;
-  }
-
   /* Mobile */
   @media (max-width: 480px) {
     body { padding: 12px 8px; }
@@ -364,32 +276,16 @@
       border-radius: 6px;
     }
 
-    .info-bar { gap: 4px; margin-bottom: 10px; }
+    .info-bar { margin-bottom: 8px; width: 96vw; gap: 5px; }
 
-    .info-bar .stat {
-      padding: 4px 8px;
-      gap: 4px;
-      border-radius: 8px;
-    }
-
-    .info-bar .stat-label {
-      font-size: 0.6rem;
-      letter-spacing: 0.5px;
-    }
-
-    .info-bar .value { font-size: 0.8rem; }
+    .info-bar .stat { padding: 3px 7px; }
+    .info-bar .stat-label { font-size: 0.45rem; }
+    .info-bar .stat .value { font-size: 0.75rem; }
 
     .board {
       width: 96vw;
-      border-radius: 8px 8px 0 0;
+      border-radius: 8px;
       border-width: 1.5px;
-    }
-
-    .actions { width: 96vw; }
-
-    .actions button {
-      padding: 7px 0;
-      font-size: 0.6rem;
     }
 
     .cell {
@@ -398,18 +294,18 @@
 
     .numpad {
       width: 96vw;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
+      gap: 3px;
       margin-top: 10px;
     }
 
     .numpad button {
-      padding: 14px 2px;
-      font-size: 1.35rem;
-      border-radius: 10px;
+      padding: 12px 0;
+      font-size: 1.15rem;
+      border-radius: 8px;
     }
 
-    .numpad button.erase-btn { font-size: 0.72rem; }
+    .numpad .bottom-row { gap: 3px; margin-top: 6px; }
+    .numpad .bottom-row button { font-size: 0.62rem; padding: 9px 2px; }
 
     .message {
       margin-top: 12px;
@@ -417,13 +313,6 @@
       font-size: 0.85rem;
     }
 
-    .saves-panel {
-      width: 96vw;
-      border-radius: 12px;
-    }
-
-    .saves-header { padding: 14px 16px; }
-    .saves-header h2 { font-size: 0.95rem; }
   }
 
   /* Prevent zoom on double-tap for mobile */
@@ -448,33 +337,18 @@
 </div>
 
 <div class="info-bar">
-  <div class="stat"><span class="stat-label">Feil</span><span class="value" id="errors">0</span><span class="stat-label">/3</span></div>
-  <div class="stat"><span class="stat-label">Tid</span><span class="value" id="timer">00:00</span></div>
-  <div class="stat"><span class="stat-label">Poeng</span><span class="value" id="score">-</span></div>
-  <div class="stat"><span class="stat-label">Rekord</span><span class="value" id="best-score">-</span></div>
+  <div class="stat stat-errors"><span class="value" id="errors">0</span><span class="stat-label">Feil</span></div>
+  <div class="stat stat-time"><span class="value" id="timer">00:00</span><span class="stat-label">Tid</span></div>
+  <div class="stat stat-score"><span class="value" id="score">-</span><span class="stat-label">Poeng</span></div>
+  <div class="stat stat-best"><span class="value" id="best-score">-</span><span class="stat-label">Rekord</span></div>
 </div>
 
 <div class="board" id="board"></div>
-
-<div class="actions" id="actions">
-  <button onclick="newGame()">Nytt spill</button>
-  <button onclick="undoMove()">Angre</button>
-  <button onclick="showHighScores()">Toppliste</button>
-</div>
 
 <div class="numpad" id="numpad"></div>
 
 <div class="message" id="message"></div>
 
-<div class="overlay" id="hs-overlay" onclick="if(event.target===this)hideHighScores()">
-  <div class="saves-panel">
-    <div class="saves-header">
-      <h2>Toppliste</h2>
-      <button onclick="hideHighScores()">Lukk</button>
-    </div>
-    <div class="saves-body" id="hs-body"></div>
-  </div>
-</div>
 
 <script>
 const EMPTY = 0;
@@ -748,12 +622,21 @@ function renderNumpad() {
     btn.addEventListener('click', () => placeNumber(n));
     pad.appendChild(btn);
   }
+
+  const bottomRow = document.createElement('div');
+  bottomRow.className = 'bottom-row';
+
   const eraseBtn = document.createElement('button');
   eraseBtn.textContent = 'Slett';
-  eraseBtn.className = 'erase-btn';
   eraseBtn.addEventListener('click', eraseCell);
-  pad.appendChild(eraseBtn);
+  bottomRow.appendChild(eraseBtn);
 
+  const undoBtn = document.createElement('button');
+  undoBtn.textContent = 'Angre';
+  undoBtn.addEventListener('click', undoMove);
+  bottomRow.appendChild(undoBtn);
+
+  pad.appendChild(bottomRow);
 }
 
 // --- Keyboard Support ---
@@ -786,40 +669,6 @@ document.addEventListener('keydown', (e) => {
 
 function formatTime(s) {
   return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
-}
-
-// --- High Scores Panel ---
-
-function showHighScores() {
-  renderHighScores();
-  document.getElementById('hs-overlay').classList.add('visible');
-}
-
-function hideHighScores() {
-  document.getElementById('hs-overlay').classList.remove('visible');
-}
-
-function renderHighScores() {
-  const body = document.getElementById('hs-body');
-  const hs = getHighScores();
-  let html = '';
-
-  for (const diff of ['easy', 'medium', 'hard']) {
-    html += '<h3 class="hs-diff-title">' + diffLabel[diff] + '</h3>';
-    const list = hs[diff] || [];
-    if (list.length === 0) {
-      html += '<div class="saves-empty" style="padding:12px">Ingen poeng enna.</div>';
-      continue;
-    }
-    html += '<ol class="hs-list">';
-    for (const entry of list) {
-      const d = new Date(entry.date);
-      const dateStr = d.toLocaleDateString('nb-NO', { day: 'numeric', month: 'short' });
-      html += '<li class="hs-entry"><span class="hs-score">' + entry.score + '</span><span class="hs-meta">' + formatTime(entry.time) + ' &middot; ' + dateStr + '</span></li>';
-    }
-    html += '</ol>';
-  }
-  body.innerHTML = html;
 }
 
 // --- Init ---
