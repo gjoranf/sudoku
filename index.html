@@ -2,85 +2,107 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Sudoku</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c1220'/%3E%3Crect x='6' y='6' width='52' height='52' rx='6' fill='none' stroke='%2338bdf8' stroke-width='2' opacity='0.5'/%3E%3Cline x1='6' y1='23.3' x2='58' y2='23.3' stroke='%2338bdf8' stroke-width='1' opacity='0.3'/%3E%3Cline x1='6' y1='40.7' x2='58' y2='40.7' stroke='%2338bdf8' stroke-width='1' opacity='0.3'/%3E%3Cline x1='23.3' y1='6' x2='23.3' y2='58' stroke='%2338bdf8' stroke-width='1' opacity='0.3'/%3E%3Cline x1='40.7' y1='6' x2='40.7' y2='58' stroke='%2338bdf8' stroke-width='1' opacity='0.3'/%3E%3Ctext x='14' y='21' font-family='system-ui' font-size='12' font-weight='800' fill='%23e2e8f0' opacity='0.8'%3E9%3C/text%3E%3Ctext x='32' y='38' font-family='system-ui' font-size='12' font-weight='800' fill='%2338bdf8'%3E5%3C/text%3E%3Ctext x='48' y='54' font-family='system-ui' font-size='12' font-weight='800' fill='%23e2e8f0' opacity='0.8'%3E1%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#0c1220">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  @keyframes popIn { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: none; } }
-  @keyframes glow { 0%,100% { box-shadow: 0 0 20px rgba(99,179,237,0.15); } 50% { box-shadow: 0 0 30px rgba(99,179,237,0.3); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes popIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+  @keyframes completePulse {
+    0% { background: rgba(52,211,153,0); }
+    25% { background: rgba(52,211,153,0.22); }
+    100% { background: rgba(52,211,153,0); }
+  }
+  @keyframes completeNumber {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.18); color: #34d399; }
+    100% { transform: scale(1); }
+  }
+  @keyframes winGlow {
+    0% { box-shadow: 0 0 30px rgba(52,211,153,0.1); }
+    50% { box-shadow: 0 0 60px rgba(52,211,153,0.25), 0 0 100px rgba(56,189,248,0.1); }
+    100% { box-shadow: 0 0 30px rgba(52,211,153,0.1); }
+  }
+  @keyframes cellPlace {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    60% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+  }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: #0f172a;
+    font-family: 'Inter', 'SF Pro Display', system-ui, -apple-system, sans-serif;
+    background: #0c1220;
     background-image:
-      radial-gradient(ellipse at 20% 0%, rgba(56,189,248,0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 100%, rgba(139,92,246,0.08) 0%, transparent 50%);
+      radial-gradient(ellipse at 30% 0%, rgba(56,189,248,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 100%, rgba(139,92,246,0.05) 0%, transparent 60%);
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    padding: 24px 16px;
+    min-height: 100dvh;
+    padding: 20px 16px;
     color: #e2e8f0;
+    -webkit-font-smoothing: antialiased;
   }
 
+  /* --- Header --- */
   h1 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
+    font-size: 1.4rem;
+    margin-bottom: 16px;
     font-weight: 800;
-    letter-spacing: 6px;
+    letter-spacing: 8px;
     text-transform: uppercase;
-    background: linear-gradient(135deg, #38bdf8, #818cf8);
+    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
+  /* --- Difficulty --- */
   .controls {
     display: flex;
-    gap: 4px;
-    margin-bottom: 14px;
-    flex-wrap: wrap;
-    justify-content: center;
+    gap: 3px;
+    margin-bottom: 12px;
+    background: rgba(15,23,42,0.6);
+    border: 1px solid rgba(148,163,184,0.08);
+    border-radius: 10px;
+    padding: 3px;
   }
 
   button {
-    padding: 5px 10px;
-    border: 1px solid rgba(148,163,184,0.15);
+    padding: 6px 16px;
+    border: none;
     border-radius: 8px;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
-    background: rgba(30,41,59,0.8);
-    color: #94a3b8;
-    backdrop-filter: blur(8px);
-    letter-spacing: 0.2px;
+    background: transparent;
+    color: #475569;
+    letter-spacing: 0.5px;
     line-height: 1.2;
   }
 
-  button:hover { background: rgba(51,65,85,0.9); color: #e2e8f0; border-color: rgba(148,163,184,0.3); }
-  button:active { transform: scale(0.96); }
+  button:active { transform: scale(0.97); }
 
-  button.difficulty {
-    background: rgba(30,41,59,0.6);
-    color: #64748b;
-    border-color: rgba(100,116,139,0.2);
-  }
-  button.difficulty:hover { color: #cbd5e1; }
+  button.difficulty:hover { color: #94a3b8; }
   button.difficulty.active {
-    background: linear-gradient(135deg, rgba(56,189,248,0.2), rgba(129,140,248,0.2));
+    background: rgba(56,189,248,0.12);
     color: #38bdf8;
-    border-color: rgba(56,189,248,0.4);
-    box-shadow: 0 0 20px rgba(56,189,248,0.1);
+    box-shadow: 0 2px 12px rgba(56,189,248,0.08);
   }
 
+  /* --- Stats --- */
   .info-bar {
     display: flex;
-    margin-bottom: 12px;
-    gap: 8px;
-    width: min(88vw, 430px);
+    margin-bottom: 10px;
+    gap: 6px;
+    width: min(88vw, 420px);
   }
 
   .info-bar .stat {
@@ -89,10 +111,10 @@
     justify-content: center;
     gap: 4px;
     flex: 1;
-    background: rgba(30,41,59,0.5);
-    border: 1px solid rgba(148,163,184,0.08);
+    background: rgba(15,23,42,0.6);
+    border: 1px solid rgba(148,163,184,0.06);
     border-radius: 8px;
-    padding: 4px 4px;
+    padding: 5px 4px;
     position: relative;
     overflow: hidden;
   }
@@ -100,127 +122,134 @@
   .info-bar .stat::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 20%;
-    right: 20%;
+    top: 0; left: 25%; right: 25%;
     height: 1.5px;
-    border-radius: 0 0 4px 4px;
+    border-radius: 0 0 2px 2px;
+    opacity: 0.8;
   }
 
   .info-bar .stat-label {
-    font-size: 0.5rem;
+    font-size: 0.48rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.2px;
   }
 
   .info-bar .stat .value {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 800;
     font-variant-numeric: tabular-nums;
     line-height: 1;
   }
 
-  /* Feil — red accent */
-  .info-bar .stat.stat-errors::before { background: #f87171; }
-  .info-bar .stat.stat-errors .value { color: #f87171; }
-  .info-bar .stat.stat-errors .stat-label { color: #f8717180; }
-  .info-bar .stat.stat-errors { border-color: rgba(248,113,113,0.1); }
+  .stat.stat-errors::before { background: #ef4444; }
+  .stat.stat-errors .value { color: #f87171; }
+  .stat.stat-errors .stat-label { color: rgba(248,113,113,0.45); }
 
-  /* Tid — amber accent */
-  .info-bar .stat.stat-time::before { background: #fbbf24; }
-  .info-bar .stat.stat-time .value { color: #fbbf24; }
-  .info-bar .stat.stat-time .stat-label { color: #fbbf2480; }
-  .info-bar .stat.stat-time { border-color: rgba(251,191,36,0.1); }
+  .stat.stat-time::before { background: #f59e0b; }
+  .stat.stat-time .value { color: #fbbf24; }
+  .stat.stat-time .stat-label { color: rgba(251,191,36,0.4); }
 
-  /* Poeng — cyan accent */
-  .info-bar .stat.stat-score::before { background: #38bdf8; }
-  .info-bar .stat.stat-score .value { color: #38bdf8; }
-  .info-bar .stat.stat-score .stat-label { color: #38bdf880; }
-  .info-bar .stat.stat-score { border-color: rgba(56,189,248,0.1); }
+  .stat.stat-score::before { background: #0ea5e9; }
+  .stat.stat-score .value { color: #38bdf8; }
+  .stat.stat-score .stat-label { color: rgba(56,189,248,0.4); }
 
-  /* Rekord — purple/gold accent */
-  .info-bar .stat.stat-best::before { background: linear-gradient(90deg, #a78bfa, #fbbf24); }
-  .info-bar .stat.stat-best .value { color: #a78bfa; }
-  .info-bar .stat.stat-best .stat-label { color: #a78bfa80; }
-  .info-bar .stat.stat-best { border-color: rgba(167,139,250,0.1); }
+  .stat.stat-best::before { background: linear-gradient(90deg, #8b5cf6, #d97706); }
+  .stat.stat-best .value { color: #a78bfa; }
+  .stat.stat-best .stat-label { color: rgba(167,139,250,0.4); }
 
+  /* --- Board --- */
   .board {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     gap: 0;
-    border: 2px solid rgba(56,189,248,0.3);
-    border-radius: 12px;
+    border: 2px solid rgba(56,189,248,0.2);
+    border-radius: 10px;
     overflow: hidden;
-    width: min(88vw, 430px);
-    background: rgba(15,23,42,0.9);
+    width: min(88vw, 420px);
+    background: rgba(10,18,32,0.95);
     box-shadow:
-      0 0 40px rgba(56,189,248,0.07),
-      0 20px 60px rgba(0,0,0,0.4);
-    animation: fadeIn 0.4s ease-out;
+      0 0 0 1px rgba(56,189,248,0.05),
+      0 4px 24px rgba(0,0,0,0.4),
+      0 16px 48px rgba(0,0,0,0.2);
+    animation: fadeIn 0.35s ease-out;
   }
+
+  .board.win { animation: winGlow 2s ease-in-out infinite; }
 
   .cell {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(30,41,59,0.5);
-    font-size: clamp(1.2rem, 5vw, 1.8rem);
+    background: rgba(22,33,54,0.6);
+    font-size: clamp(1.1rem, 4.8vw, 1.6rem);
     font-weight: 700;
     cursor: pointer;
     user-select: none;
     position: relative;
     aspect-ratio: 1;
-    transition: all 0.15s;
-    border: 1px solid rgba(51,65,85,0.5);
+    transition: background 0.12s;
+    border: 0.5px solid rgba(51,65,85,0.35);
   }
 
   .cell:nth-child(9n+4),
-  .cell:nth-child(9n+7) { border-left: 2px solid rgba(56,189,248,0.25); }
+  .cell:nth-child(9n+7) { border-left: 1.5px solid rgba(56,189,248,0.18); }
 
   .cell:nth-child(n+28):nth-child(-n+36),
-  .cell:nth-child(n+55):nth-child(-n+63) { border-top: 2px solid rgba(56,189,248,0.25); }
+  .cell:nth-child(n+55):nth-child(-n+63) { border-top: 1.5px solid rgba(56,189,248,0.18); }
 
-  .cell.given { color: #e2e8f0; }
+  .cell.given { color: rgba(226,232,240,0.9); }
   .cell.user { color: #38bdf8; }
+  .cell.user-placed { animation: cellPlace 0.2s ease-out; }
   .cell.selected {
-    background: rgba(56,189,248,0.2);
-    box-shadow: inset 0 0 20px rgba(56,189,248,0.15);
+    background: rgba(56,189,248,0.14);
+    box-shadow: inset 0 0 16px rgba(56,189,248,0.1);
   }
-  .cell.highlighted { background: rgba(56,189,248,0.06); }
+  .cell.highlighted { background: rgba(56,189,248,0.04); }
   .cell.error {
-    background: rgba(239,68,68,0.2);
+    background: rgba(239,68,68,0.15);
     color: #f87171;
     animation: popIn 0.2s ease-out;
   }
-  .cell.same-value { background: rgba(129,140,248,0.12); }
+  .cell.same-value { background: rgba(129,140,248,0.08); }
+  .cell.complete-flash { animation: completePulse 0.7s ease-out; }
+  .cell.complete-number { animation: completeNumber 0.45s ease-out; }
 
-
+  /* --- Numpad --- */
   .numpad {
     display: grid;
     grid-template-columns: repeat(9, 1fr);
     gap: 4px;
-    margin-top: 18px;
-    width: min(88vw, 430px);
-    animation: fadeIn 0.4s ease-out 0.1s both;
+    margin-top: 14px;
+    width: min(88vw, 420px);
+    animation: fadeIn 0.35s ease-out 0.08s both;
   }
 
   .numpad button {
-    padding: 16px 4px;
-    font-size: 1.5rem;
+    padding: 14px 0;
+    font-size: 1.35rem;
     font-weight: 700;
-    border-radius: 12px;
-    background: rgba(30,41,59,0.7);
-    color: #cbd5e1;
-    border: 1px solid rgba(148,163,184,0.1);
-    transition: all 0.15s;
+    border-radius: 10px;
+    background: rgba(22,33,54,0.7);
+    color: rgba(203,213,225,0.9);
+    border: 1px solid rgba(148,163,184,0.06);
+    transition: all 0.12s;
   }
 
   .numpad button:hover {
-    background: rgba(56,189,248,0.15);
+    background: rgba(56,189,248,0.1);
     color: #38bdf8;
-    border-color: rgba(56,189,248,0.3);
-    box-shadow: 0 0 16px rgba(56,189,248,0.1);
+    border-color: rgba(56,189,248,0.2);
+  }
+
+  .numpad button:active {
+    transform: scale(0.93);
+    background: rgba(56,189,248,0.18);
+  }
+
+  .numpad button.num-done {
+    opacity: 0.15;
+    pointer-events: none;
   }
 
   .numpad .bottom-row {
@@ -228,101 +257,102 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4px;
-    margin-top: 8px;
+    margin-top: 6px;
   }
 
   .numpad .bottom-row button {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
     padding: 10px 4px;
+    color: #64748b;
+    background: rgba(15,23,42,0.5);
+    border: 1px solid rgba(148,163,184,0.06);
   }
 
+  .numpad .bottom-row button:hover {
+    color: #94a3b8;
+    background: rgba(30,41,59,0.6);
+  }
+
+  /* --- Message --- */
   .message {
-    margin-top: 18px;
-    padding: 14px 28px;
-    border-radius: 12px;
+    margin-top: 14px;
+    padding: 12px 24px;
+    border-radius: 10px;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 0.88rem;
+    letter-spacing: 0.2px;
     display: none;
     animation: popIn 0.3s ease-out;
-    letter-spacing: 0.3px;
+    text-align: center;
+    max-width: min(88vw, 420px);
   }
 
   .message.visible { display: block; }
 
-  .message {
-    background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(52,211,153,0.1));
+  .message.win-msg {
+    background: linear-gradient(135deg, rgba(16,185,129,0.12), rgba(52,211,153,0.08));
     color: #34d399;
-    border: 1px solid rgba(52,211,153,0.3);
+    border: 1px solid rgba(52,211,153,0.2);
   }
 
-  /* Mobile */
+  .message.lose-msg {
+    background: linear-gradient(135deg, rgba(239,68,68,0.1), rgba(248,113,113,0.06));
+    color: #f87171;
+    border: 1px solid rgba(248,113,113,0.2);
+  }
+
+  .message .score-display {
+    font-size: 1.8rem;
+    font-weight: 800;
+    display: block;
+    margin: 6px 0 2px;
+    background: linear-gradient(135deg, #34d399, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .message .score-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(52,211,153,0.5);
+    display: block;
+  }
+
+  /* --- Mobile --- */
   @media (max-width: 480px) {
-    body { padding: 12px 8px; }
+    body { padding: 12px 6px; }
 
-    h1 {
-      font-size: 1.3rem;
-      margin-bottom: 12px;
-      letter-spacing: 4px;
-    }
+    h1 { font-size: 1.1rem; margin-bottom: 10px; letter-spacing: 6px; }
 
-    .controls { gap: 3px; margin-bottom: 8px; }
+    .controls { margin-bottom: 8px; padding: 2px; }
+    .controls button { padding: 5px 12px; font-size: 0.65rem; }
 
-    button {
-      padding: 4px 7px;
-      font-size: 0.65rem;
-      border-radius: 6px;
-    }
+    .info-bar { width: 96vw; gap: 4px; margin-bottom: 8px; }
+    .info-bar .stat { padding: 4px 2px; border-radius: 6px; }
+    .info-bar .stat-label { font-size: 0.42rem; letter-spacing: 0.8px; }
+    .info-bar .stat .value { font-size: 0.72rem; }
 
-    .info-bar { margin-bottom: 8px; width: 96vw; gap: 5px; }
+    .board { width: 96vw; border-radius: 8px; border-width: 1.5px; }
+    .cell { font-size: clamp(1rem, 5.5vw, 1.5rem); }
 
-    .info-bar .stat { padding: 3px 7px; }
-    .info-bar .stat-label { font-size: 0.45rem; }
-    .info-bar .stat .value { font-size: 0.75rem; }
+    .numpad { width: 96vw; gap: 3px; margin-top: 10px; }
+    .numpad button { padding: 12px 0; font-size: 1.15rem; border-radius: 8px; }
+    .numpad .bottom-row { gap: 3px; margin-top: 5px; }
+    .numpad .bottom-row button { font-size: 0.6rem; padding: 9px 2px; }
 
-    .board {
-      width: 96vw;
-      border-radius: 8px;
-      border-width: 1.5px;
-    }
-
-    .cell {
-      font-size: clamp(1.1rem, 6vw, 1.6rem);
-    }
-
-    .numpad {
-      width: 96vw;
-      gap: 3px;
-      margin-top: 10px;
-    }
-
-    .numpad button {
-      padding: 12px 0;
-      font-size: 1.15rem;
-      border-radius: 8px;
-    }
-
-    .numpad .bottom-row { gap: 3px; margin-top: 6px; }
-    .numpad .bottom-row button { font-size: 0.62rem; padding: 9px 2px; }
-
-    .message {
-      margin-top: 12px;
-      padding: 10px 16px;
-      font-size: 0.85rem;
-    }
-
+    .message { font-size: 0.8rem; padding: 10px 16px; max-width: 96vw; }
+    .message .score-display { font-size: 1.5rem; }
   }
 
-  /* Prevent zoom on double-tap for mobile */
   .board, .numpad button, .cell { touch-action: manipulation; }
 
-  /* Safe area for notch phones */
   @supports (padding: env(safe-area-inset-bottom)) {
-    body {
-      padding-bottom: calc(12px + env(safe-area-inset-bottom));
-    }
+    body { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
   }
 </style>
 </head>
@@ -349,12 +379,11 @@
 
 <div class="message" id="message"></div>
 
-
 <script>
 const EMPTY = 0;
-let board = [];        // current state
-let solution = [];     // full solution
-let given = [];        // which cells are pre-filled
+let board = [];
+let solution = [];
+let given = [];
 let selectedCell = null;
 let difficulty = 'easy';
 let errors = 0;
@@ -434,25 +463,19 @@ function solve(grid) {
 }
 
 function generatePuzzle() {
-  // Build a full solved grid
   const grid = Array.from({length: 9}, () => Array(9).fill(EMPTY));
   solve(grid);
-
   const sol = grid.map(r => [...r]);
-
-  // Remove cells
   const totalClues = cluesCount[difficulty];
   const totalRemove = 81 - totalClues;
   const positions = shuffle([...Array(81).keys()]);
   let removed = 0;
-
   for (const pos of positions) {
     if (removed >= totalRemove) break;
     const r = Math.floor(pos / 9), c = pos % 9;
     grid[r][c] = EMPTY;
     removed++;
   }
-
   return { puzzle: grid, solution: sol };
 }
 
@@ -473,6 +496,7 @@ function newGame() {
   document.getElementById('errors').textContent = '0';
   document.getElementById('timer').textContent = '00:00';
   document.getElementById('score').textContent = '-';
+  document.getElementById('board').classList.remove('win');
   updateBestDisplay();
   hideMessage();
   render();
@@ -510,6 +534,8 @@ function placeNumber(num) {
   if (num === solution[r][c]) {
     board[r][c] = num;
     history.push({ type: 'place', r, c, prevVal, num });
+    render();
+    checkCompletions(r, c, num);
     if (checkWin()) {
       gameOver = true;
       clearInterval(timerInterval);
@@ -517,7 +543,8 @@ function placeNumber(num) {
       saveHighScore(difficulty, finalScore, seconds);
       updateBestDisplay();
       document.getElementById('score').textContent = finalScore;
-      showMessage('Gratulerer! Du loste sudokuen! Poeng: ' + finalScore);
+      document.getElementById('board').classList.add('win');
+      showWinMessage(finalScore);
     }
   } else {
     board[r][c] = num;
@@ -527,10 +554,10 @@ function placeNumber(num) {
     if (errors >= 3) {
       gameOver = true;
       clearInterval(timerInterval);
-      showMessage('Game over! Du har brukt 3 feil.');
+      showLoseMessage();
     }
+    render();
   }
-  render();
 }
 
 function eraseCell() {
@@ -554,6 +581,7 @@ function undoMove() {
     }
   }
   render();
+  renderNumpad();
 }
 
 function checkWin() {
@@ -563,14 +591,90 @@ function checkWin() {
   return true;
 }
 
-function showMessage(text) {
+function isRowComplete(row) {
+  for (let c = 0; c < 9; c++)
+    if (board[row][c] === EMPTY || board[row][c] !== solution[row][c]) return false;
+  return true;
+}
+
+function isColComplete(col) {
+  for (let r = 0; r < 9; r++)
+    if (board[r][col] === EMPTY || board[r][col] !== solution[r][col]) return false;
+  return true;
+}
+
+function isBoxComplete(row, col) {
+  const br = Math.floor(row / 3) * 3;
+  const bc = Math.floor(col / 3) * 3;
+  for (let r = br; r < br + 3; r++)
+    for (let c = bc; c < bc + 3; c++)
+      if (board[r][c] === EMPTY || board[r][c] !== solution[r][c]) return false;
+  return true;
+}
+
+function isNumberComplete(num) {
+  let count = 0;
+  for (let r = 0; r < 9; r++)
+    for (let c = 0; c < 9; c++)
+      if (board[r][c] === num && board[r][c] === solution[r][c]) count++;
+  return count === 9;
+}
+
+function flashCells(indices, className) {
+  const cells = document.getElementById('board').children;
+  for (const idx of indices) {
+    const cell = cells[idx];
+    if (cell) {
+      cell.classList.remove(className);
+      void cell.offsetWidth;
+      cell.classList.add(className);
+    }
+  }
+}
+
+function checkCompletions(row, col, num) {
+  const toFlash = new Set();
+
+  if (isRowComplete(row))
+    for (let c = 0; c < 9; c++) toFlash.add(row * 9 + c);
+  if (isColComplete(col))
+    for (let r = 0; r < 9; r++) toFlash.add(r * 9 + col);
+  if (isBoxComplete(row, col)) {
+    const br = Math.floor(row / 3) * 3;
+    const bc = Math.floor(col / 3) * 3;
+    for (let r = br; r < br + 3; r++)
+      for (let c = bc; c < bc + 3; c++)
+        toFlash.add(r * 9 + c);
+  }
+
+  if (toFlash.size > 0) flashCells([...toFlash], 'complete-flash');
+
+  if (isNumberComplete(num)) {
+    const numCells = [];
+    for (let r = 0; r < 9; r++)
+      for (let c = 0; c < 9; c++)
+        if (board[r][c] === num) numCells.push(r * 9 + c);
+    flashCells(numCells, 'complete-number');
+    renderNumpad();
+  }
+}
+
+function showWinMessage(score) {
   const el = document.getElementById('message');
-  el.textContent = text;
-  el.classList.add('visible');
+  el.className = 'message win-msg visible';
+  el.innerHTML = 'Gratulerer!<span class="score-display">' + score + '</span><span class="score-label">poeng</span>';
+}
+
+function showLoseMessage() {
+  const el = document.getElementById('message');
+  el.className = 'message lose-msg visible';
+  el.textContent = 'Game over — 3 feil brukt';
 }
 
 function hideMessage() {
-  document.getElementById('message').classList.remove('visible');
+  const el = document.getElementById('message');
+  el.className = 'message';
+  el.innerHTML = '';
 }
 
 // --- Rendering ---
@@ -578,7 +682,6 @@ function hideMessage() {
 function render() {
   const boardEl = document.getElementById('board');
   boardEl.innerHTML = '';
-
   const selVal = selectedCell && board[selectedCell.r][selectedCell.c];
 
   for (let r = 0; r < 9; r++) {
@@ -603,9 +706,7 @@ function render() {
       if (isGiven) cell.classList.add('given');
       else cell.classList.add('user');
 
-      if (val !== EMPTY) {
-        cell.textContent = val;
-      }
+      if (val !== EMPTY) cell.textContent = val;
 
       cell.addEventListener('click', () => selectCell(r, c));
       boardEl.appendChild(cell);
@@ -619,6 +720,7 @@ function renderNumpad() {
   for (let n = 1; n <= 9; n++) {
     const btn = document.createElement('button');
     btn.textContent = n;
+    if (isNumberComplete(n)) btn.classList.add('num-done');
     btn.addEventListener('click', () => placeNumber(n));
     pad.appendChild(btn);
   }
@@ -644,18 +746,9 @@ function renderNumpad() {
 document.addEventListener('keydown', (e) => {
   if (gameOver) return;
   const num = parseInt(e.key);
-  if (num >= 1 && num <= 9) {
-    placeNumber(num);
-    return;
-  }
-  if (e.key === 'Backspace' || e.key === 'Delete') {
-    eraseCell();
-    return;
-  }
-  if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
-    undoMove();
-    return;
-  }
+  if (num >= 1 && num <= 9) { placeNumber(num); return; }
+  if (e.key === 'Backspace' || e.key === 'Delete') { eraseCell(); return; }
+  if (e.key === 'z' && (e.ctrlKey || e.metaKey)) { undoMove(); return; }
   if (!selectedCell) return;
   let { r, c } = selectedCell;
   if (e.key === 'ArrowUp') r = Math.max(0, r - 1);
