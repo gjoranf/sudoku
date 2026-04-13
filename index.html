@@ -13,12 +13,14 @@
   @keyframes popIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
   @keyframes completePulse {
     0% { background: rgba(52,211,153,0); }
-    25% { background: rgba(52,211,153,0.22); }
+    15% { background: rgba(52,211,153,0.28); }
+    60% { background: rgba(52,211,153,0.15); }
     100% { background: rgba(52,211,153,0); }
   }
   @keyframes completeNumber {
     0% { transform: scale(1); }
-    35% { transform: scale(1.18); color: #34d399; }
+    20% { transform: scale(1.22); color: #34d399; }
+    50% { transform: scale(1.1); color: #34d399; }
     100% { transform: scale(1); }
   }
   @keyframes winGlow {
@@ -332,8 +334,8 @@
     color: var(--same-color);
     font-weight: 800;
   }
-  .cell.complete-flash { animation: completePulse 0.7s ease-out; }
-  .cell.complete-number { animation: completeNumber 0.45s ease-out; }
+  .cell.complete-flash { animation: completePulse 1.8s ease-out; }
+  .cell.complete-number { animation: completeNumber 1.2s ease-out; }
 
   /* --- Numpad --- */
   .numpad {
